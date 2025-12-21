@@ -119,27 +119,27 @@ public:
 };
 ```
 
-### Smart Pointers Overview
+### 7. Smart Pointers Overview
 
 #### 1. `std::unique_ptr<T>` (独占所有权)
 - **特点**: 唯一所有者，不可复制，可移动
 - **用途**: 明确单一所有权，替代 `new/delete`
 - **内存**: 零开销（与原始指针相同）
 - **示例**:
-```cpp
-#include <memory>
+    ```cpp
+    #include <memory>
 
-// 创建
-auto ptr1 = std::make_unique<int>(42);
-auto ptr2 = std::make_unique<std::string>("Hello");
+    // 创建
+    auto ptr1 = std::make_unique<int>(42);
+    auto ptr2 = std::make_unique<std::string>("Hello");
 
-// 移动所有权（不可复制）
-auto ptr3 = std::move(ptr1);  // ptr1 现在为 nullptr
+    // 移动所有权（不可复制）
+    auto ptr3 = std::move(ptr1);  // ptr1 现在为 nullptr
 
-// 自定义删除器
-auto file_deleter = [](FILE* f) { if (f) fclose(f); };
-std::unique_ptr<FILE, decltype(file_deleter)> filePtr(fopen("test.txt", "r"), file_deleter);
-```
+    // 自定义删除器
+    auto file_deleter = [](FILE* f) { if (f) fclose(f); };
+    std::unique_ptr<FILE, decltype(file_deleter)> filePtr(fopen("test.txt", "r"), file_deleter);
+    ```
 
 #### 2. `std::shared_ptr<T>` (共享所有权)
 + **特点**: 引用计数，多个指针共享同一对象
@@ -147,39 +147,39 @@ std::unique_ptr<FILE, decltype(file_deleter)> filePtr(fopen("test.txt", "r"), fi
 + **开销**: 稍高（需要维护引用计数）
 + **注意**: 避免循环引用（使用 `weak_ptr` 打破）
 + **示例**:
-```cpp
-auto sp1 = std::make_shared<int>(100);  // 引用计数 = 1
-{
-    auto sp2 = sp1;  // 引用计数 = 2（共享所有权）
-    std::cout << *sp2 << std::endl;
-}  // sp2 销毁，引用计数 = 1
+    ```cpp
+    auto sp1 = std::make_shared<int>(100);  // 引用计数 = 1
+    {
+        auto sp2 = sp1;  // 引用计数 = 2（共享所有权）
+        std::cout << *sp2 << std::endl;
+    }  // sp2 销毁，引用计数 = 1
 
-// 循环引用问题
-struct Node {
-    std::shared_ptr<Node> next;
-    // std::weak_ptr<Node> prev;  // 正确：使用 weak_ptr 避免循环引用
-};
+    // 循环引用问题
+    struct Node {
+        std::shared_ptr<Node> next;
+        // std::weak_ptr<Node> prev;  // 正确：使用 weak_ptr 避免循环引用
+    };
 
-auto node1 = std::make_shared<Node>();
-auto node2 = std::make_shared<Node>();
-node1->next = node2;
-node2->next = node1;  // 循环引用！内存泄漏
-```
+    auto node1 = std::make_shared<Node>();
+    auto node2 = std::make_shared<Node>();
+    node1->next = node2;
+    node2->next = node1;  // 循环引用！内存泄漏
+    ```
 
 #### 3. `std::weak_ptr<T>` (弱引用)
 - **特点**: 不增加引用计数，观察 `shared_ptr` 但不拥有对象
 - **用途**: 打破循环引用，缓存，观察者模式
 - **示例**:
-```cpp
-auto shared = std::make_shared<int>(50);
-std::weak_ptr<int> weak = shared;  // 不增加引用计数
+    ```cpp
+    auto shared = std::make_shared<int>(50);
+    std::weak_ptr<int> weak = shared;  // 不增加引用计数
 
-if (auto locked = weak.lock()) {  // 尝试获取 shared_ptr
-    std::cout << *locked << std::endl;  // 对象还存在
-} else {
-    std::cout << "Object expired" << std::endl;
-}
-```
+    if (auto locked = weak.lock()) {  // 尝试获取 shared_ptr
+        std::cout << *locked << std::endl;  // 对象还存在
+    } else {
+        std::cout << "Object expired" << std::endl;
+    }
+    ```
 
 #### 4. `std::auto_ptr<T>` (已弃用)
 - **注意**: C++98 引入，C++17 移除，存在缺陷，**不要使用**
@@ -193,34 +193,34 @@ if (auto locked = weak.lock()) {  // 尝试获取 shared_ptr
 5. **尽量不用 `new/delete`** - 使用智能指针
 
 ### 实际示例
-```cpp
-#include <memory>
-#include <vector>
+    ```cpp
+    #include <memory>
+    #include <vector>
 
-class Resource {
-public:
-    Resource() { std::cout << "Resource acquired\n"; }
-    ~Resource() { std::cout << "Resource released\n"; }
-    void use() { std::cout << "Using resource\n"; }
-};
+    class Resource {
+    public:
+        Resource() { std::cout << "Resource acquired\n"; }
+        ~Resource() { std::cout << "Resource released\n"; }
+        void use() { std::cout << "Using resource\n"; }
+    };
 
-int main() {
-    // 1. 独占资源
-    auto res1 = std::make_unique<Resource>();
-    res1->use();
-    
-    // 2. 共享资源
-    auto shared_res = std::make_shared<Resource>();
-    {
-        auto another_owner = shared_res;  // 共享所有权
-        another_owner->use();
-    }  // another_owner 销毁，但资源还在
-    
-    // 3. 容器中的智能指针
-    std::vector<std::unique_ptr<Resource>> resources;
-    resources.push_back(std::make_unique<Resource>());
-    resources.push_back(std::make_unique<Resource>());
-    
-    return 0;  // 所有资源自动释放
-}
-```
+    int main() {
+        // 1. 独占资源
+        auto res1 = std::make_unique<Resource>();
+        res1->use();
+        
+        // 2. 共享资源
+        auto shared_res = std::make_shared<Resource>();
+        {
+            auto another_owner = shared_res;  // 共享所有权
+            another_owner->use();
+        }  // another_owner 销毁，但资源还在
+        
+        // 3. 容器中的智能指针
+        std::vector<std::unique_ptr<Resource>> resources;
+        resources.push_back(std::make_unique<Resource>());
+        resources.push_back(std::make_unique<Resource>());
+        
+        return 0;  // 所有资源自动释放
+    }
+    ```
