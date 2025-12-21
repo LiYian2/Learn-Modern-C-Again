@@ -193,34 +193,35 @@ public:
 5. **尽量不用 `new/delete`** - 使用智能指针
 
 ### 实际示例
-    ```cpp
-    #include <memory>
-    #include <vector>
+```cpp
+#include <iostream>
+#include <memory>
+#include <vector>
 
-    class Resource {
-    public:
-        Resource() { std::cout << "Resource acquired\n"; }
-        ~Resource() { std::cout << "Resource released\n"; }
-        void use() { std::cout << "Using resource\n"; }
-    };
+class Resource {
+public:
+    Resource() { std::cout << "Resource acquired\n"; }
+    ~Resource() { std::cout << "Resource released\n"; }
+    void use() { std::cout << "Using resource\n"; }
+};
 
-    int main() {
-        // 1. 独占资源
-        auto res1 = std::make_unique<Resource>();
-        res1->use();
-        
-        // 2. 共享资源
-        auto shared_res = std::make_shared<Resource>();
-        {
-            auto another_owner = shared_res;  // 共享所有权
-            another_owner->use();
-        }  // another_owner 销毁，但资源还在
-        
-        // 3. 容器中的智能指针
-        std::vector<std::unique_ptr<Resource>> resources;
-        resources.push_back(std::make_unique<Resource>());
-        resources.push_back(std::make_unique<Resource>());
-        
-        return 0;  // 所有资源自动释放
-    }
-    ```
+int main() {
+    // 1. 独占资源
+    auto res1 = std::make_unique<Resource>();
+    res1->use();
+    
+    // 2. 共享资源
+    auto shared_res = std::make_shared<Resource>();
+    {
+        auto another_owner = shared_res;  // 共享所有权
+        another_owner->use();
+    }  // another_owner 销毁，但资源还在
+    
+    // 3. 容器中的智能指针
+    std::vector<std::unique_ptr<Resource>> resources;
+    resources.push_back(std::make_unique<Resource>());
+    resources.push_back(std::make_unique<Resource>());
+    
+    return 0;  // 所有资源自动释放
+}
+```
