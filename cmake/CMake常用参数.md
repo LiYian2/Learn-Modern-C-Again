@@ -1,4 +1,4 @@
-0. 基础命令
+# 0. 基础命令
 ```bash
 # 配置阶段：生成构建系统文件
 # -S . : 指定源目录为当前目录（CMakeLists.txt所在目录）
@@ -13,7 +13,7 @@ cmake --build build
 ./build/hello
 ```
 
-1. 配置常用参数
+# 1. 配置常用参数
 	```bash
 	# 指定生成器（Generator）
 	cmake -S . -B build -G "Unix Makefiles"  # Unix/Linux默认
@@ -35,7 +35,7 @@ cmake --build build
 	# 传递自定义变量
 	cmake -S . -B build -DMY_CUSTOM_VAR=ON
 	```
-2. 构建常用参数
+# 2. 构建常用参数
 	```bash
 	# 指定并行编译（利用多核CPU）
 	cmake --build build --parallel 4  # 使用4个线程
@@ -53,7 +53,7 @@ cmake --build build
 	cmake --build build --config Debug
 	cmake --build build --config Release
 	```
-3. 其他常用命令
+# 3. 其他常用命令
 	```bash
 	# 查看帮助
 	cmake --help
