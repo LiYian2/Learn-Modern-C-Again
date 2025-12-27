@@ -11,30 +11,32 @@
   - `double`: typically 64 bits (double precision)
 - `char`: typically 8 bits (1 byte)
 - `bool`: typically 1 byte (true/false)
-## a. Overflow & Underflow
+### 2. Overflow & Underflow
 - Integer overflow: when a calculation exceeds the maximum value of the type, it wraps around (undefined behavior for signed types). 
 
-```cpp
-// Example of integer overflow in addition
-int a = INT_MAX;
-int b = a + 1; // Undefined behavior for signed int
-unsigned int c = UINT_MAX;
-unsigned int d = c + 1; // Wraps around to 0
+    ```cpp
+    // Example of integer overflow in addition
+    int a = INT_MAX;
+    int b = a + 1; // Undefined behavior for signed int
+    unsigned int c = UINT_MAX;
+    unsigned int d = c + 1; // Wraps around to 0
 
-// Example of integer overflow in multiplication
-int x = 100000;
-int y = 30000;
-int z = x * y; // May overflow and result in undefined behavior
-long long z = x*y; // Still may overflow if x and y are too large as the type of intermediate result seleted is still int (the larger type of two operands, at least int)
+    // Example of integer overflow in multiplication
+    int x = 100000;
+    int y = 30000;
+    int z = x * y; // May overflow and result in undefined behavior
+    long long z = x*y; // Still may overflow if x and y are too large as the type of intermediate result seleted is still int (the larger type of two operands, at least int)
 
-int a = 1000000;
-int b = 1000000;
-long long c = a * b; // WRONG: Math is done as 'int' first, then assigned.
+    int a = 1000000;
+    int b = 1000000;
+    long long c = a * b; // WRONG: Math is done as 'int' first, then assigned.
+    ```
 
-// Correct way:
-long long c = static_cast<long long>(a) * b; // Cast one operand to long long to ensure the multiplication is done in long long
-long long c = a * 1LL * b; // Using a long long literal to promote the operation
-```
+    ```cpp
+    // Correct way:
+    long long c = static_cast<long long>(a) * b; // Cast one operand to long long to ensure the multiplication is done in long long
+    long long c = a * 1LL * b; // Using a long long literal to promote the operation
+    ```
 
 - Floating-point overflow: results in `infinity`.
 - Underflow: when a number is too small to be represented, it may become zero or denormalized.
@@ -45,6 +47,7 @@ long long c = a * 1LL * b; // Using a long long literal to promote the operation
 |int * long long|long long is higher rank.|long long
 |short * short|"Both are ""smaller"" than int."|int (This is called Integral Promotion)
 |float * int|Floating point ranks higher.|float
+
 ### 2. Variables & Constants
 - Variables: Skip.
 - Constants: Use `const` or `constexpr` for values that should not change.
