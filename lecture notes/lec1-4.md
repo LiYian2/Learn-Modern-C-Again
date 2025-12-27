@@ -13,6 +13,7 @@
 - `bool`: typically 1 byte (true/false)
 ## a. Overflow & Underflow
 - Integer overflow: when a calculation exceeds the maximum value of the type, it wraps around (undefined behavior for signed types). 
+
 ```cpp
 // Example of integer overflow in addition
 int a = INT_MAX;
@@ -34,6 +35,7 @@ long long c = a * b; // WRONG: Math is done as 'int' first, then assigned.
 long long c = static_cast<long long>(a) * b; // Cast one operand to long long to ensure the multiplication is done in long long
 long long c = a * 1LL * b; // Using a long long literal to promote the operation
 ```
+
 - Floating-point overflow: results in `infinity`.
 - Underflow: when a number is too small to be represented, it may become zero or denormalized.
 
@@ -89,9 +91,12 @@ long long c = a * 1LL * b; // Using a long long literal to promote the operation
 ## Lec 3: Control Flow (Skipped)
 ## Lec 4: Vector, Array, Normal Pointer, References
 ### 1. Vector:
-- Declare: `std::vector<type> vecName;` or `std::vector<type> vecName(size);` or `std::vector<type> vecName = {val1, val2, ...};` or
-`std::vector<type> vecName(size, initialValue);` or
-`std::vector<type> vecName(OriginalVector);` (copy constructor)
+- Declare: 
+    - `std::vector<type> vecName;` or 
+    - `std::vector<type> vecName(size);` or 
+    - `std::vector<type> vecName = {val1, val2, ...};` or
+    - `std::vector<type> vecName(size, initialValue);` or
+    - `std::vector<type> vecName(OriginalVector);` (copy constructor)
 - Access: `vecName[index]` or `vecName.at(index)` (with bounds checking)
 - Size: `vecName.size()`
 - Add element at end: `vecName.push_back(value);`
@@ -149,7 +154,9 @@ long long c = a * 1LL * b; // Using a long long literal to promote the operation
     }
     ```
 ### 4. Array:
-- Declaration: `type arrName[size];` or `type arrName[] = {val1, val2, ...};`
+- Declaration: 
+    - `type arrName[size];` or 
+    - `type arrName[] = {val1, val2, ...};`
 - Access: `arrName[index]`
 - Size: Use `sizeof(arrName) / sizeof(arrName[0])` for static arrays.
 - Characteristics:
